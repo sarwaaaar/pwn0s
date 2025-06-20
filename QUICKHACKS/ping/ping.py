@@ -197,10 +197,10 @@ def execute_option(opt):
                 option['func']()
         input(f'\n{Wh}[ {Gr}+ {Wh}] {Gr}Press enter to continue')
         main()
-                return
-        print(f'{Wh}[ {Re}! {Wh}] {Re}Option not found')
-        time.sleep(2)
-        main()
+        return
+    print(f'{Wh}[ {Re}! {Wh}] {Re}Option not found')
+    time.sleep(2)
+    main()
 
 
 def option_text():

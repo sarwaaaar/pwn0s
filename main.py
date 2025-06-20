@@ -10,7 +10,7 @@ import time
 import zipfile
 import io
 
-VERSION = "0.0.1"
+VERSION = "0.0.3"
 
 RESET = "\033[0m"
 BOLD = "\033[1m"
