@@ -2,6 +2,7 @@
 import random
 from scapy.all import IP, ICMP, send, fragment
 from colorama import Fore
+import os
 
 __letters = list("1234567890qwertyuiopasdfghjklzxcvbnm")
 

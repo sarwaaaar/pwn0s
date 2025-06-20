@@ -3,11 +3,15 @@ import requests
 import random
 import tools.randomData as randomData
 from colorama import Fore
+import os
 
 # Load user agents
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+user_agents_path = os.path.join(SCRIPT_ROOT, '../../L7/user_agents.json')
 user_agents = []
-for _ in range(30):
-    user_agents.append(randomData.random_useragent())
+with open(user_agents_path, "r") as agents:
+    import json
+    user_agents = json.load(agents)["agents"]
 
 # Headers
 headers = {

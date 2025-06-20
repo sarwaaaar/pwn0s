@@ -1,6 +1,7 @@
 import json
 import random
 import string
+import os
 
 mails = (
     "mail.ru",
@@ -14,16 +15,19 @@ mails = (
     "gmail.com",
 )
 
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 
 # Get random service
-def random_service(list):
-    return random.choice(list)
+def random_service(service_list):
+    return random.choice(service_list)
 
 
 # Create random name
 def random_name():
-    with open("tools/SMS/names.json", "r") as names:
-        names = json.load(names)["names"]
+    names_path = os.path.join(SCRIPT_ROOT, 'names.json')
+    with open(names_path, "r") as names:
+        names = json.load(names)
     return random.choice(names)
 
 
@@ -57,6 +61,7 @@ def random_token():
 
 # Get random user agent
 def random_useragent():
-    with open("tools/SMS/user_agents.json", "r") as agents:
+    agents_path = os.path.join(SCRIPT_ROOT, 'user_agents.json')
+    with open(agents_path, "r") as agents:
         user_agents = json.load(agents)["agents"]
     return random.choice(user_agents)

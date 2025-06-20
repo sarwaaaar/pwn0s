@@ -3,6 +3,7 @@ import random
 from scapy.all import IP, TCP, send
 import tools.randomData as randomData
 from colorama import Fore
+import os
 
 
 def flood(target):

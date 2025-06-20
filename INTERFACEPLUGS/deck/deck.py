@@ -90,9 +90,10 @@ def connect_ssh(host, password):
 def main():
     clear_screen()
     # Read config.json for credentials
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json')
+    SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(SCRIPT_ROOT, 'config.json')
     if not os.path.exists(config_path):
-        print(f"{RED}[!] config.json not found in {os.path.dirname(os.path.abspath(__file__))}{RESET}")
+        print(f"{RED}[!] config.json not found in {SCRIPT_ROOT}{RESET}")
         print(f"{YELLOW}Please create a config.json with username, ip, and password.{RESET}")
         sys.exit(1)
     try:

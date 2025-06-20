@@ -3,10 +3,10 @@ import sys
 import argparse
 import difflib
 
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Read ASCII art from shared file
-ASCII_ART_PATH = os.path.join(os.path.dirname(__file__), '../../ascii.txt')
+ASCII_ART_PATH = os.path.join(SCRIPT_ROOT, '../../ascii.txt')
 try:
     with open(ASCII_ART_PATH, 'r', encoding='utf-8') as f:
         ASCII_ART = f.read()

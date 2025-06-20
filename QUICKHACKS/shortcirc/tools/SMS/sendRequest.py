@@ -3,17 +3,23 @@ import json
 import requests
 from colorama import Fore
 import tools.SMS.randomData as randomData
+import os
+
+# Set script root
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 # Read services file
 def getServices(file="tools/SMS/services.json"):
-    with open(file, "r", encoding="utf-8", errors="ignore") as services:
+    services_path = file if os.path.isabs(file) else os.path.join(SCRIPT_ROOT, os.path.basename(file))
+    with open(services_path, "r", encoding="utf-8", errors="ignore") as services:
         return json.load(services)["services"]
 
 
 # Read proxy list
 def getProxys(file="tools/SMS/proxy.json"):
-    with open(file, "r") as proxys:
+    proxys_path = file if os.path.isabs(file) else os.path.join(SCRIPT_ROOT, os.path.basename(file))
+    with open(proxys_path, "r") as proxys:
         return json.load(proxys)["proxy"]
 
 

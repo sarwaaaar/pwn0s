@@ -2,6 +2,7 @@
 import random
 import socket
 from colorama import Fore
+import os
 
 # Create socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

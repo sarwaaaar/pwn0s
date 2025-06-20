@@ -9,7 +9,8 @@ from smtplib import SMTPAuthenticationError, SMTP
 from tools.addons.twilight.twilight import Decrypt, Encrypt
 
 # File with login data
-sender_email_database = "tools/EMAIL/sender.json"
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+sender_email_database = os.path.join(SCRIPT_ROOT, 'sender.json')
 twilight_encryption_key = getuser() + ":TWILIGHT"
 smtp_server = "smtp.gmail.com"
 smtp_port = 587

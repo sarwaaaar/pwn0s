@@ -1,5 +1,8 @@
 import json
 import random
+import os
+
+SCRIPT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 # Get random IP
@@ -12,13 +15,15 @@ def random_IP():
 
 # Get random referer
 def random_referer():
-    with open("tools/L7/referers.txt", "r") as referers:
+    referers_path = os.path.join(SCRIPT_ROOT, '../../L7/referers.txt')
+    with open(referers_path, "r") as referers:
         referers = referers.readlines()
     return random.choice(referers)
 
 
 # Get random user agent
 def random_useragent():
-    with open("tools/L7/user_agents.json", "r") as agents:
+    agents_path = os.path.join(SCRIPT_ROOT, '../../L7/user_agents.json')
+    with open(agents_path, "r") as agents:
         user_agents = json.load(agents)["agents"]
     return random.choice(user_agents)

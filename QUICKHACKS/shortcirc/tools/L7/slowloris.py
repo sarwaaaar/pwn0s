@@ -3,6 +3,7 @@ import random
 import socket
 import tools.randomData as randomData
 from colorama import Fore
+import os
 
 # Init socket
 def create_socket(target):
