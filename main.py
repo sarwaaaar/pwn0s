@@ -7,6 +7,8 @@ import os
 import difflib
 import shutil
 import time
+import zipfile
+import io
 
 VERSION = "0.0.1"
 
@@ -390,7 +392,61 @@ def check_dependencies():
         sys.exit(1)
     print(f"{GREEN}{BOLD}[✓] All dependencies satisfied!{RESET}\n")
 
+GITHUB_REPO_URL = "https://github.com/sarwaaaar/PWN0S"
+GITHUB_ZIP_URL = "https://github.com/sarwaaaar/PWN0S/archive/refs/heads/main.zip"
+
+LATEST_VERSION_URL = "https://raw.githubusercontent.com/sarwaaaar/PWN0S/main/main.py"
+
+def get_latest_version():
+    import requests
+    try:
+        resp = requests.get(LATEST_VERSION_URL, timeout=10)
+        if resp.status_code == 200:
+            import re
+            match = re.search(r'VERSION\s*=\s*["\\\']([\d.]+)["\\\']', resp.text)
+            if match:
+                return match.group(1)
+    except Exception as e:
+        print(f"{YELLOW}[!] Could not check for updates: {e}{RESET}")
+    return None
+
+def update_to_latest():
+    import requests
+    print(f"{YELLOW}{BOLD}[*] Downloading latest version from GitHub...{RESET}")
+    try:
+        resp = requests.get(GITHUB_ZIP_URL, stream=True, timeout=30)
+        if resp.status_code == 200:
+            zip_bytes = io.BytesIO(resp.content)
+            with zipfile.ZipFile(zip_bytes) as z:
+                # Extract all files, overwrite existing
+                for member in z.namelist():
+                    if member.endswith('/'):
+                        continue
+                    target_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), *member.split('/')[1:])
+                    os.makedirs(os.path.dirname(target_path), exist_ok=True)
+                    with open(target_path, 'wb') as f:
+                        f.write(z.read(member))
+            print(f"{GREEN}{BOLD}[✓] Updated to latest version! Restarting...{RESET}")
+            time.sleep(1)
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+        else:
+            print(f"{RED}[!] Failed to download latest version (HTTP {resp.status_code}){RESET}")
+    except Exception as e:
+        print(f"{RED}[!] Update failed: {e}{RESET}")
+
+def check_and_update():
+    print(f"{YELLOW}{BOLD}[*] Checking for updates...{RESET}")
+    latest = get_latest_version()
+    if latest and latest != VERSION:
+        print(f"{PINK}New version available: {latest} (current: {VERSION}){RESET}")
+        update_to_latest()
+    elif latest:
+        print(f"{GREEN}{BOLD}[✓] You are running the latest version ({VERSION}){RESET}")
+    else:
+        print(f"{YELLOW}[!] Could not determine latest version. Continuing...{RESET}")
+
 def main():
+    check_and_update()
     check_dependencies()
     clear_screen()
     print_ascii_art()
