@@ -11,7 +11,7 @@ import zipfile
 import io
 from INTERFACEPLUGS.blackout.blackout import BlackoutESP32
 
-VERSION = "0.0.5"
+VERSION = "0.0.6"
 
 RESET = "\033[0m"
 BOLD = "\033[1m"
@@ -75,12 +75,6 @@ def print_command_guide():
     print(f"{BOLD}{PINK}Main Commands:{RESET}")
     for c in COMMAND_ALIASES:
         print(f"  {PINK}{c:<14}{RESET} {YELLOW}(short: {COMMAND_ALIASES[c]}){RESET}")
-    print(f"\n{BOLD}{PINK}Subcommands:{RESET}")
-    print(f"  {PINK}quickhack{RESET} [ {YELLOW}shortcirc (sc), ping (pg){RESET} ]")
-    print(f"    {YELLOW}shortcirc methods:{RESET} SMS (s), EMAIL (e), NTP (n), UDP (u), SYN (sy), ICMP (i), POD (p), MEMCACHED (m), HTTP (h), SLOWLORIS (sl)")
-    print(f"    {YELLOW}ping options:{RESET} IP Tracker (ip), Show Your IP (sip), Phone Number Tracker (pn), Username Tracker (ut), Exit (q)")
-    print(f"{YELLOW}Note:{RESET} Commands other than quickhack, daemon, and interfaceplug must start with a dash (-).\n")
-
 def suggest_command(user_cmd, valid_cmds):
     matches = difflib.get_close_matches(user_cmd, valid_cmds, n=3, cutoff=0.5)
     if matches:
@@ -294,7 +288,15 @@ def run_command(cmdline):
         print()
     elif cmd == "interfaceplug":
         if len(parts) > 1 and parts[1] in ["-blackout", "-b"]:
-            blackout = BlackoutESP32(lambda msg, t='system': print(f"{YELLOW if t=='error' else GREEN if t=='success' else PINK}{msg}{RESET}"))
+            blackout = BlackoutESP32(
+                output_callback=lambda msg, t='system': print(msg),
+                print_ascii_art=print_ascii_art,
+                YELLOW=YELLOW,
+                GREEN=GREEN,
+                RED=RED,
+                PINK=PINK,
+                RESET=RESET
+            )
             args = parts[2:]
             if not args:
                 print(f"{RED}Usage: interfaceplug -blackout -connect <server_ip> | -scan | -connect -p <device> | -send <command>{RESET}")
